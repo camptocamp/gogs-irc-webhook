@@ -68,8 +68,14 @@ func main() {
   }
   con.AddCallback("001", func (e *irc.Event) {
     con.Join(cfg.Room)
-    con.Privmsgf(cfg.Room, "\x0F[\x0313%v\x03] \x0315%v\x03 pushed \x02%v\x02 new commit to \x0306%v\x03: \x1F\x0302%v\x03\x1F", payload.Repository.Name, payload.Pusher.Name, len(payload.Commits), branch, payload.Commits[0].Url)
-    con.Privmsgf(cfg.Room, "\x0313%v\x03/\x0306%v\x0306 \x0314%v\x03 \x0315%v\x03: %v", payload.Repository.Name, branch, payload.After[0:7], payload.Commits[0].Author.Name, payload.Commits[0].Message)
+    str1 := "[%v] %v pushed %v new commit to %v: %v"
+    str2 := "%v/%v %v %v: %v"
+    if cfg.Colors {
+      str1 = "\x0F[\x0313%v\x03] \x0315%v\x03 pushed \x02%v\x02 new commit to \x0306%v\x03: \x1F\x0302%v\x03\x1F"
+      str2 = "\x0313%v\x03/\x0306%v\x0306 \x0314%v\x03 \x0315%v\x03: %v"
+    }
+    con.Privmsgf(cfg.Room, str1, payload.Repository.Name, payload.Pusher.Name, len(payload.Commits), branch, payload.Commits[0].Url)
+    con.Privmsgf(cfg.Room, str2, payload.Repository.Name, branch, payload.After[0:7], payload.Commits[0].Author.Name, payload.Commits[0].Message)
     con.Quit()
   })
 
