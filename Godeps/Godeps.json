@@ -1,0 +1,15 @@
+{
+	"ImportPath": "github.com/camptocamp/gogs-irc-webhook",
+	"GoVersion": "go1.5",
+	"Deps": [
+		{
+			"ImportPath": "github.com/caarlos0/env",
+			"Comment": "v2.0-6-g636ad28",
+			"Rev": "636ad281b72c8e300e7eb9b1a213a9fdc5b4c0b1"
+		},
+		{
+			"ImportPath": "github.com/thoj/go-ircevent",
+			"Rev": "da78ed515c0f0833e7a92c7cc52898176198e2c1"
+		}
+	]
+}
