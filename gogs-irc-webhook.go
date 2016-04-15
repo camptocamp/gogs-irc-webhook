@@ -41,7 +41,7 @@ type Config struct {
   Port             string   `env:"IRC_PORT" envDefault:"6667"`
   Room             string   `env:"IRC_ROOM"`
   Nick             string   `env:"IRC_NICK"`
-  Branches         []string `env:"IRC_BRANCHES"`
+  // Branches         []string `env:"IRC_BRANCHES"` // TODO
   // NickservPassword string   `env:"IRC_NICKSERV_PASSWORD"` // TODO
   // Password         string   `env:"IRC_PASSWORD"` // TODO
   // Ssl              bool     `env:"IRC_SSL" envDefault:"true"` // TODO
