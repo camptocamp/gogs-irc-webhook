@@ -42,7 +42,7 @@ type Config struct {
 	Port   string `env:"IRC_PORT" envDefault:"6667"`
 	Room   string `env:"IRC_ROOM"`
 	Nick   string `env:"IRC_NICK"`
-	// Branches         []string `env:"IRC_BRANCHES"` // TODO
+	Branches         []string `env:"IRC_BRANCHES"`
 	// NickservPassword string   `env:"IRC_NICKSERV_PASSWORD"` // TODO
 	// Password         string   `env:"IRC_PASSWORD"` // TODO
 	// Ssl              bool     `env:"IRC_SSL" envDefault:"true"` // TODO
@@ -61,24 +61,29 @@ func main() {
 
 	branch := strings.TrimPrefix(payload.Ref, "refs/heads/")
 
-	con := irc.IRC(cfg.Nick, cfg.Nick)
-	err := con.Connect(cfg.Server + ":" + cfg.Port)
-	if err != nil {
-		fmt.Println("Failed connecting")
-		return
-	}
-	con.AddCallback("001", func(e *irc.Event) {
-		con.Join(cfg.Room)
-		str1 := "[%v] %v pushed %v new commit to %v: %v"
-		str2 := "%v/%v %v %v: %v"
-		if cfg.Colors {
-			str1 = "\x0F[\x0313%v\x03] \x0315%v\x03 pushed \x02%v\x02 new commit to \x0306%v\x03: \x1F\x0302%v\x03\x1F"
-			str2 = "\x0313%v\x03/\x0306%v\x0306 \x0314%v\x03 \x0315%v\x03: %v"
-		}
-		con.Privmsgf(cfg.Room, str1, payload.Repository.Name, payload.Pusher.Name, len(payload.Commits), branch, payload.Commits[0].Url)
-		con.Privmsgf(cfg.Room, str2, payload.Repository.Name, branch, payload.After[0:7], payload.Commits[0].Author.Name, payload.Commits[0].Message)
-		con.Quit()
-	})
+	for _, a := range cfg.Branches {
+		if strings.TrimSpace(a) == branch {
 
-	con.Loop()
+			con := irc.IRC(cfg.Nick, cfg.Nick)
+			err := con.Connect(cfg.Server+":"+cfg.Port)
+			if err != nil {
+				fmt.Println("Failed connecting")
+				return
+			}
+			con.AddCallback("001", func (e *irc.Event) {
+				con.Join(cfg.Room)
+				str1 := "[%v] %v pushed %v new commit to %v: %v"
+				str2 := "%v/%v %v %v: %v"
+				if cfg.Colors {
+					str1 = "\x0F[\x0313%v\x03] \x0315%v\x03 pushed \x02%v\x02 new commit to \x0306%v\x03: \x1F\x0302%v\x03\x1F"
+					str2 = "\x0313%v\x03/\x0306%v\x0306 \x0314%v\x03 \x0315%v\x03: %v"
+				}
+				con.Privmsgf(cfg.Room, str1, payload.Repository.Name, payload.Pusher.Name, len(payload.Commits), branch, payload.Commits[0].Url)
+				con.Privmsgf(cfg.Room, str2, payload.Repository.Name, branch, payload.After[0:7], payload.Commits[0].Author.Name, payload.Commits[0].Message)
+				con.Quit()
+			})
+
+			con.Loop()
+		}
+	}
 }

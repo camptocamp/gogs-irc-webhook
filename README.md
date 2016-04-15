@@ -32,7 +32,7 @@ IRC channel (or channels) to which messages will be sent.
 
 Nickname to use when sending messages (optional).
 
-### IRC_BRANCHES (TODO)
+### IRC_BRANCHES
 
 Names of the git branches (or refs) to monitor for events (comma-separated).
 
